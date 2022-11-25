@@ -12,7 +12,6 @@ PG_PASSWORD = env.str("PG_PASSWORD")
 PG_HOST = env.str("PG_HOST")
 PG_PORT = env.int("PG_PORT")
 PG_DB = env.str("PG_DB_NAME")
-DB_DUMP_PATH = f"tgbot{sep}data{sep}db_dump.sql"
 # REDIS
 REDIS_HOST = env.str("REDIS_HOST")
 REDIS_PORT = env.int("REDIS_PORT")
