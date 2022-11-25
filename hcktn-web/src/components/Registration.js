@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Admin_pan from './Admin_pan';
 
 const Registration = function() {
 

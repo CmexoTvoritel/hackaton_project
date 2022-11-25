@@ -6,7 +6,6 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import Registration from './components/Registration';
 import Header from './components/Header';
 
 function App() {

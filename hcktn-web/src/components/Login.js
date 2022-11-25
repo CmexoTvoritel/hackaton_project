@@ -1,4 +1,12 @@
 import React, {useState} from 'react';
+import Admin_pan from './Admin_pan';
+
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+  } from 'react-router-dom';
 
 const Login = function() {
 
@@ -17,11 +25,19 @@ const Login = function() {
                     <input></input>
                 </div>
             </div>
-            <div class="footer">
-                <button class='btn' type='submit'>Войти</button>
-            </div>
+            
+            <Link to="/Admin_pan">
+                <button>Login</button>
+            </Link>
+
+            
+
         </div>
     )
 }
+
+// function admn_pn () {
+//     <Link to="/admin_panel">Admin_pan</Link>
+// }
 
 export default Login;

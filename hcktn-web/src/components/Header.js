@@ -8,6 +8,7 @@ import {
     Route,
     Link,
   } from 'react-router-dom';
+import Admin_pan from './Admin_pan';
 
 const Header = function() {
     return(
@@ -27,8 +28,9 @@ const Header = function() {
 
             <main>
                     <Routes>
+                        <Route exact path="/Admin_pan" element={<Admin_pan/>}/>
                         <Route exact path="/login" element={<Login/>}/>
-                        <Route path="/"element={<Registration/>}/>
+                        <Route exact path="/"element={<Registration/>}/>
                     </Routes>
             </main>
 
