@@ -7,19 +7,11 @@ class Repo:
     def __init__(self, conn):
         self.conn = conn
 
-    async def add_user(self, user_id) -> None:
-        """Store user in DB"""
-        await self.conn.execute(
-            "INSERT INTO Userss (user_id) VALUES ($1)",
-            user_id,
-        )
-        return
-
     async def authenticate_user(self, tg_id, email, name, surname, patronymic, group_name) -> None:
         """Добавляет данные о пользователе в БД"""
         await self.conn.execute(
             "INSERT INTO users (tg_id, mail, name, surname, patronymic, group_name) VALUES ($1, $2, $3, $4, $5, $6)",
-            tg_id, name, email, surname, patronymic, group_name
+            tg_id, email, name, surname, patronymic, group_name
         )
         return
 
@@ -32,7 +24,7 @@ class Repo:
         return check
 
     async def get_users_by_group_name(self, group_name) -> typing.List[int]:
-        """List all chats"""
+        """Возвращаеет tg_id всех юзеров переданной группы"""
         users = await self.conn.fetch(
             "SELECT tg_id FROM users WHERE group_name=$1",
             group_name
