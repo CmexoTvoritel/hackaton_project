@@ -36,7 +36,7 @@ async def name_writen(msg: types.Message, state: FSMContext):
 
 async def surname_writen(msg: types.Message, state: FSMContext):
     if len(msg.text) > 60:
-        # TODO
+        await msg.answer(text="🔻 Длина фамилии не может превышать 60 символов.\nПожалуйста, попробуйте ещё раз...")
         return
     await state.update_data(surname=msg.text)
     text = "🔹 <b>Авторизация</b>\nВведите своё отчество..."
@@ -47,10 +47,10 @@ async def surname_writen(msg: types.Message, state: FSMContext):
 
 async def patronymic_writen(msg: types.Message, state: FSMContext):
     if len(msg.text) > 60:
-        # TODO
+        await msg.answer(text="🔻 Длина отчества не может превышать 60 символов.\nПожалуйста, попробуйте ещё раз...")
         return
     await state.update_data(patronymic=msg.text)
-    text = "🔹 <b>Авторизация</b>\nВведите свою группу..."
+    text = "🔹 <b>Авторизация</b>\nВведите свою группу (например КТбо1-7)"
     #
     await msg.answer(text=text)
     await AuthenticationState.next()
@@ -58,9 +58,14 @@ async def patronymic_writen(msg: types.Message, state: FSMContext):
 
 async def group_name_writen(msg: types.Message, repo: Repo, state: FSMContext):
     if len(msg.text) > 7:
-        # TODO
+        await msg.answer(text="🔻 Длина группы не может превышать 7 символов.\nПожалуйста, попробуйте ещё раз...")
         return
-    await state.update_data(group_name=msg.text)
+
+    tmp_gr_name = msg.text
+    tmp_gr_name = tmp_gr_name[0].upper() + tmp_gr_name[1].upper() + \
+        tmp_gr_name[2].lower() + tmp_gr_name[3].lower() + tmp_gr_name[-3:]
+
+    await state.update_data(group_name=tmp_gr_name)
     #
     user_data = await state.get_data()
     email = user_data["email"]

@@ -30,3 +30,11 @@ class Repo:
             tg_id
         )
         return check
+
+    async def get_users_by_group_name(self, group_name) -> typing.List[int]:
+        """List all chats"""
+        users = await self.conn.fetch(
+            "SELECT tg_id FROM users WHERE group_name=$1",
+            group_name
+        )
+        return [user[0] for user in users]
