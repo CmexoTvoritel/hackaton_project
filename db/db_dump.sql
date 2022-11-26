@@ -42,5 +42,6 @@ CREATE TABLE IF NOT EXISTS Student_answers (
     q_id BIGINT,
     student_id BIGINT,
     answer BOOLEAN NOT NULL,
-    FOREIGN KEY (q_id) REFERENCES Lecture_questions(id) ON DELETE CASCADE
+    FOREIGN KEY (q_id) REFERENCES Lecture_questions(id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE
 );

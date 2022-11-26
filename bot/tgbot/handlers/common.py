@@ -90,7 +90,7 @@ async def send_question(call: types.CallbackQuery, repo: Repo):
     kb = create_answer_kb(q_answers, q_id)
 
     for group_name in group_names:
-        users = await repo.get_users_by_group_name(group_name=group_name)
+        users = await repo.get_users_tg_ids_by_group_name(group_name=group_name)
         for tg_id in users:
             try:
                 await call.bot.send_message(
@@ -108,14 +108,15 @@ async def student_answer(call: types.CallbackQuery, repo: Repo):
     call_data = call.data.split("_")
     q_id = int(call_data[1])
     t_or_f = call_data[2]
+    user_id = await  repo.get_user_id_by_tg_id(call.from_user.id)
     #
     if t_or_f == 'true':
-        await repo.save_student_answer(q_id, call.from_user.id, True)
+        await repo.save_student_answer(q_id, user_id, True)
         await call.message.edit_text(
             text=call.message.text + "\n\n✅ Правильно!"
         )
     else:
-        await repo.save_student_answer(q_id, call.from_user.id, False)
+        await repo.save_student_answer(q_id, user_id, False)
         await call.message.edit_text(
             text=call.message.text + "\n\n🔻 Неправильный ответ :("
         )
