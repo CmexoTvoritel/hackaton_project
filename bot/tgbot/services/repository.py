@@ -47,7 +47,7 @@ class Repo:
         )
         return [q[0] for q in q_data]
 
-    async def get_question_data_by_q_id(self, q_id): # TODO: return type hint
+    async def get_question_data_by_q_id(self, q_id) -> typing.List[typing.Tuple[str, typing.List[str]]]:
         """Возвращает данные всех вопросов к определённой лекции"""
         q_data = await self.conn.fetchrow(
             "SELECT q_text, answers FROM lecture_questions WHERE id=$1",
