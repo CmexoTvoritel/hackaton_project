@@ -62,3 +62,11 @@ class Repo:
             lec_id
         )
         return count
+
+    async def save_student_answer(self, q_id, student_id, answer: bool) -> None:
+        """Добавляет данные о пользователе в БД"""
+        await self.conn.execute(
+            "INSERT INTO Student_answers (q_id, student_id, answer) VALUES ($1, $2, $3)",
+            q_id, student_id, answer
+        )
+        return

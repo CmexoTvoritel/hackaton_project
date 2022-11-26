@@ -104,9 +104,28 @@ async def send_question(call: types.CallbackQuery, repo: Repo):
     await call.answer()
 
 
+async def student_answer(call: types.CallbackQuery, repo: Repo):
+    call_data = call.data.split("_")
+    q_id = int(call_data[1])
+    t_or_f = call_data[2]
+    #
+    if t_or_f == 'true':
+        await repo.save_student_answer(q_id, call.from_user.id, True)
+        await call.message.edit_text(
+            text=call.message.text + "\n\n✅ Правильно!"
+        )
+    else:
+        await repo.save_student_answer(q_id, call.from_user.id, False)
+        await call.message.edit_text(
+            text=call.message.text + "\n\n🔻 Неправильный ответ :("
+        )
+    await call.answer()
+
 def register_handlers_common(dp: Dispatcher):
     dp.register_message_handler(command_start, commands=["start"], state="*")
     dp.register_callback_query_handler(
         start_lec, text="start_lec", user_id=1333495909)
     dp.register_callback_query_handler(
         send_question, text_startswith="question_", user_id=1333495909)
+    dp.register_callback_query_handler(
+        student_answer, text_startswith="q_")
