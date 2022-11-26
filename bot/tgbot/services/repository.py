@@ -30,3 +30,35 @@ class Repo:
             group_name
         )
         return [user[0] for user in users]
+
+    async def get_question_ids_by_lec_id(self, lec_id) -> typing.List[int]:
+        """Возвращаеет данные всех вопросов к определённой лекции"""
+        q_data = await self.conn.fetch(
+            "SELECT id FROM lecture_questions WHERE lecture_id=$1",
+            lec_id
+        )
+        return [q[0] for q in q_data]
+
+    async def get_question_data_by_q_id(self, q_id) -> typing.List[int]:
+        """Возвращаеет данные всех вопросов к определённой лекции"""
+        q_data = await self.conn.fetchrow(
+            "SELECT q_text, answers FROM lecture_questions WHERE id=$1",
+            q_id
+        )
+        return [q_data[0], q_data[1]]
+
+    async def get_group_names_by_q_id(self, q_id) -> int:
+        """Возвращаеет кол-во всех вопросов к определённой лекции"""
+        group_names = await self.conn.fetch(
+            "SELECT group_names FROM lectures WHERE id=(SELECT lecture_id FROM lecture_questions WHERE id=$1)",
+            q_id
+        )
+        return [group_name[0][0] for group_name in group_names]
+
+    async def get_count_questions_by_lec_id(self, lec_id) -> int:
+        """Возвращаеет кол-во всех вопросов к определённой лекции"""
+        count = await self.conn.fetchval(
+            "SELECT COUNT(*) FROM lecture_questions WHERE lecture_id=$1",
+            lec_id
+        )
+        return count

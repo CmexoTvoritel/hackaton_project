@@ -2,4 +2,4 @@
 env/
 .env
 .idea
-db/sql.py
+.vscode/

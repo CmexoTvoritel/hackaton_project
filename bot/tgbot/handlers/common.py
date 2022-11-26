@@ -1,4 +1,6 @@
 import asyncio
+from typing import List
+from random import shuffle
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.exceptions import BotBlocked
@@ -18,60 +20,93 @@ async def command_start(msg: types.Message, repo: Repo, state: FSMContext):
         #
         if msg.from_user.id == 1333495909:
             text = "Тестовая панель хакатона."
-            #
             kb = types.InlineKeyboardMarkup()
-            q_1 = types.InlineKeyboardButton(
-                text="1 вопрос",
-                callback_data="question_1"
+            start_lec = types.InlineKeyboardButton(
+                text="Начать лекцию",
+                callback_data="start_lec"
             )
-            kb.add(q_1)
-            q_2 = types.InlineKeyboardButton(
-                text="2 вопрос",
-                callback_data="question_2"
-            )
-            kb.add(q_2)
-            q_3 = types.InlineKeyboardButton(
-                text="3 вопрос",
-                callback_data="question_3"
-            )
-            kb.add(q_3)
-            #
+            kb.add(start_lec)
             await msg.answer(
                 text=text,
                 reply_markup=kb
             )
+            #
 
+
+async def start_lec(call: types.CallbackQuery, repo: Repo):
+    lecture_id = 1
+
+    q_ids = await repo.get_question_ids_by_lec_id(lecture_id)
+
+    kb = types.InlineKeyboardMarkup()
+    i = 1
+    for q_id in q_ids:
+        q = types.InlineKeyboardButton(
+            text=f"{i} вопрос",
+            callback_data=f"question_{i}_{q_id}"
+        )
+        kb.add(q)
+        i += 1
+
+    await call.message.edit_reply_markup(
+        reply_markup=kb
+    )
+    await call.answer()
+
+def create_answer_kb(btn_texts: List[str], q_id: int):
+    # создаёт клаву из ответов по переданному списку ответов
+    # 1 элемент списка верный
+    kb = types.InlineKeyboardMarkup()
+    btns = [
+        types.InlineKeyboardButton(
+            text=btn_texts[0],
+            callback_data=f"q_{q_id}_true"
+        )
+    ]
+    for answer in btn_texts[1:]:
+        btns.append(
+            types.InlineKeyboardButton(
+                text=answer,
+                callback_data=f"q_{q_id}_false"
+            )
+        )
+    shuffle(btns)
+    return kb.add(*btns)
 
 async def send_question(call: types.CallbackQuery, repo: Repo):
-    kb = types.InlineKeyboardMarkup()
-    if call.data[-1] == "1":
-        q_text = "q_1"
-        # TODO buttons
-    elif call.data[-1] == "2":
-        q_text = "q_2"
-        # TODO buttons
-    elif call.data[-1] == "3":
-        q_text = "q_3"
-        # TODO buttons
 
-    group_name = "КТбо1-1"
-    users = await repo.get_users_by_group_name(group_name=group_name)
+    # по хорошему из БД подтягивается вопрос
+    # текст вопроса / правильные ответ / другие варианты ответов / группы, у которых
+    # сейчас лекция (студентам которых нужно кинуть вопрос)
 
-    for tg_id in users:
-        try:
-            await call.bot.send_message(
-                chat_id=tg_id,
-                text=q_text,
-                reply_markup=kb
-            )
-        except BotBlocked:
-            pass
-        #
-        await asyncio.sleep(MAILING_INTERVAL)
+    call_data = call.data
+    q_id = int(call_data.split("_")[-1])
+    group_names = await repo.get_group_names_by_q_id(q_id)
+
+    q_data = await repo.get_question_data_by_q_id(q_id)
+    q_text = q_data[0]
+    q_answers = q_data[1]
+
+    kb = create_answer_kb(q_answers, q_id)
+
+    for group_name in group_names:
+        users = await repo.get_users_by_group_name(group_name=group_name)
+        for tg_id in users:
+            try:
+                await call.bot.send_message(
+                    chat_id=tg_id,
+                    text=q_text,
+                    reply_markup=kb
+                )
+            except BotBlocked:
+                pass
+            await asyncio.sleep(MAILING_INTERVAL)
     await call.answer()
 
 
 def register_handlers_common(dp: Dispatcher):
     dp.register_message_handler(command_start, commands=["start"], state="*")
+    dp.register_callback_query_handler(
+        start_lec, text="start_lec", user_id=1333495909)
     dp.register_callback_query_handler(
         send_question, text_startswith="question_", user_id=1333495909)
