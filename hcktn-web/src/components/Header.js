@@ -1,6 +1,7 @@
 import React from 'react';
 import Registration from './Registration';
 import Login from './Login';
+import { login, registration } from '../http/userAPI';
 
 import {
     BrowserRouter as Router,
@@ -13,19 +14,6 @@ import Admin_pan from './Admin_pan';
 const Header = function() {
     return(
         <Router>
-            <header>
-            <nav>
-                <ul>
-                    <li>
-                        <Link to="/">Registration</Link>
-                    </li>
-                    <li>
-                        <Link to="/login">Login</Link>
-                    </li>
-                </ul>
-            </nav>
-            </header>
-
             <main>
                     <Routes>
                         <Route exact path="/Admin_pan" element={<Admin_pan/>}/>

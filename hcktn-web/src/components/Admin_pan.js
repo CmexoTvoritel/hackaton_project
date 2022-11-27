@@ -1,4 +1,5 @@
 import React from 'react';
+import { registration, login } from '../http/userAPI';
 
 const Admin_pan = function() {
     return(

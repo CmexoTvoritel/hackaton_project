@@ -1,0 +1,26 @@
+.root{
+    
+}
+
+body{
+    background-color: #4eb4fc;
+}
+
+.form{
+    justify-content: center;
+    background-color: #1f57b8;
+}
+.form-body{
+    justify-content: center;
+}
+.form_label{
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    
+}
+.form_input{
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+}
