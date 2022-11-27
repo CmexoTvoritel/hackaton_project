@@ -1,2 +1,2 @@
 # hackaton_project
-Repository for hackaton. Case: ICTIS
+Repository for hackaton. Case: ICTIB
